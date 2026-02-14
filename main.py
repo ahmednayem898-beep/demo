@@ -7,7 +7,11 @@ app = FastAPI()
 
 BOT_TOKEN = os.getenv("DC_token")
 WEBHOOK_URL = os.getenv("discord_urls")
-
+@app.get("/")
+async def test(req: Request):
+    return {
+        "success":True
+    }
 @app.post("/interactions")
 async def interactions(req: Request):
     data = await req.json()
