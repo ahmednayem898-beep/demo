@@ -1,18 +1,31 @@
 from fastapi import FastAPI, Request
-from dotenv import load_dotenv
+from fastapi.responses import JSONResponse
 import os
-
-load_dotenv() 
+import requests
 
 app = FastAPI()
 
-GREETING = os.getenv("discord_urls", "Hello default!") 
+BOT_TOKEN = os.getenv("DC_token")
+WEBHOOK_URL = os.getenv("discord_urls")
 
-@app.get("/")
-async def root():
-    return {"message": GREETING}
+@app.post("/interactions")
+async def interactions(req: Request):
+    data = await req.json()
+    
+    if data.get("type") == 1:
+        return JSONResponse({"type": 1})
 
-@app.post("/echo")
-async def echo(request: Request):
-    data = await request.json()
-    return {"received": data}
+    if data.get("data", {}).get("name") == "ask":
+        question = data["data"]["options"][0]["value"]
+        
+        answer = f"Demo response to: {question}"
+
+        requests.patch(
+            WEBHOOK_URL,
+            json={"content": answer},
+            headers={"Authorization": f"Bot {BOT_TOKEN}"}
+        )
+
+        return JSONResponse({"type": 5})
+    
+    return JSONResponse({"error": "Unknown command"}, status_code=400)
