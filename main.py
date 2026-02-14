@@ -1,15 +1,16 @@
 from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
+from dotenv import load_dotenv
 import os
+
+load_dotenv() 
 
 app = FastAPI()
 
-# Example environment variable usage
-# GREETING = os.getenv("GREETING", "Hello from FastAPI on Vercel!")
+GREETING = os.getenv("discord_urls", "Hello default!") 
 
 @app.get("/")
 async def root():
-    return {"message": "Hello from FastAPI on Vercel!"}
+    return {"message": GREETING}
 
 @app.post("/echo")
 async def echo(request: Request):
