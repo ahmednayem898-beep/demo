@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from nacl.signing import VerifyKey
 from nacl.exceptions import BadSignatureError
 from response.ask.res_1 import ask_res
+from style.response.ask.ask import generate_response
 
 app = FastAPI()
 
@@ -44,10 +45,11 @@ async def interactions(request: Request):
         if command_name == "ask":
             question = data["data"]["options"][0]["value"]
             ai_response = ask_res(question)
+            make_style_response = generate_response(question,ai_response['msg'])
             return JSONResponse({
                 "type": 4,  
                 "data": {
-                    "content": f"📌 **Your Question:**\n```{question}```\n\n💡 **Answer:**\n{ai_response['msg']}"
+                    "content": make_style_response
                 }
             })
 
