@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse
 from nacl.signing import VerifyKey
 from nacl.exceptions import BadSignatureError
+from response.ask.res_1 import ask_res
 
 app = FastAPI()
 
@@ -23,6 +24,10 @@ def verify_signature(request: Request, body: bytes):
         raise HTTPException(status_code=401, detail="Invalid signature")
 
 
+
+
+
+
 @app.post("/interactions")
 async def interactions(request: Request):
     body = await request.body()
@@ -30,21 +35,19 @@ async def interactions(request: Request):
 
     data = await request.json()
 
-    # PING
     if data.get("type") == 1:
         return JSONResponse({"type": 1})
 
-    # Slash command
     if data.get("type") == 2:
         command_name = data["data"]["name"]
 
         if command_name == "ask":
             question = data["data"]["options"][0]["value"]
-
+            ai_response = ask_res(question)
             return JSONResponse({
-                "type": 4,  # IMMEDIATE RESPONSE
+                "type": 4,  
                 "data": {
-                    "content": f"Demo response to: {question}"
+                    "content": f"Your Question: {question}\nAnswer: {ai_response['msg']}"
                 }
             })
 
