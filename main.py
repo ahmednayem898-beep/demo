@@ -47,7 +47,7 @@ async def interactions(request: Request):
             return JSONResponse({
                 "type": 4,  
                 "data": {
-                    "content": f"Your Question: {question}\nAnswer: {ai_response['msg']}"
+                    "content": f"Your Question: {question}\n\n\nAnswer: {ai_response['msg']}"
                 }
             })
 
