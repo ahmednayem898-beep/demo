@@ -46,9 +46,24 @@ async def interactions(request: Request):
             ai_response = ask_res(question)
             return JSONResponse({
                 "type": 4,  
-                "data": {
-                    "content": f"Your Question: {question}\n\n\nAnswer: {ai_response['msg']}"
-                }
+                "embeds": [
+            {
+                "title": "🤖 AI Response",
+                "color": 3447003,
+                "fields": [
+                    {
+                        "name": "📌 Your Question",
+                        "value": question,
+                        "inline": False
+                    },
+                    {
+                        "name": "💡 Answer",
+                        "value": ai_response['msg'],
+                        "inline": False
+                    }
+                ]
+            }
+        ]
             })
 
     return JSONResponse({"error": "Unknown interaction"}, status_code=400)
