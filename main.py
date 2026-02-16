@@ -52,7 +52,10 @@ async def interactions(request: Request):
                     "content": make_style_response
                 }
             })
-        elif command_name == "cmd" or command_name == "command":
+        elif command_name == "doc" :
+
+
+
             return JSONResponse({
                 "type": 4,  
                 "data": {
