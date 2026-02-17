@@ -4,7 +4,7 @@ from nacl.signing import VerifyKey
 from nacl.exceptions import BadSignatureError
 from response.ask.res_1 import ask_res
 from style.response.ask.ask import generate_response
-# from handlers.doc.doc import ask_doc
+from handlers.doc.doc import ask_doc
 
 app = FastAPI()
 
@@ -54,21 +54,20 @@ async def interactions(request: Request):
                 }
             })
         elif command_name == "doc" :
-                question = data["data"]["options"][0]["value"]
-                
-            # ai_response = ask_doc(question)
-            # if ai_response and ai_response['success']:
-            #     return JSONResponse({
-            #         "type": 4,  
-            #         "data": {
-            #             "content": ai_response['msg']
-            #         }
-            #     })
-            # else:
+            question = data["data"]["options"][0]["value"]
+            ai_response = ask_doc(question)
+            if ai_response and ai_response['success']:
                 return JSONResponse({
                     "type": 4,  
                     "data": {
-                        "content": "asd123123 123213 123 123 "
+                        "content": ai_response['msg']
+                    }
+                })
+            else:
+                return JSONResponse({
+                    "type": 4,  
+                    "data": {
+                        "content": "🙂"
                     }
                 })
 
