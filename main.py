@@ -4,7 +4,7 @@ from nacl.signing import VerifyKey
 from nacl.exceptions import BadSignatureError
 from response.ask.res_1 import ask_res
 from style.response.ask.ask import generate_response
-from handlers.doc.doc import ask_doc
+# from handlers.doc.doc import ask_doc
 
 app = FastAPI()
 
