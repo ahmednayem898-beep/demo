@@ -55,7 +55,7 @@ async def interactions(request: Request):
             })
         elif command_name == "doc" :
                 question = data["data"]["options"][0]["value"]
-                print(question)
+                
             # ai_response = ask_doc(question)
             # if ai_response and ai_response['success']:
             #     return JSONResponse({
@@ -68,7 +68,7 @@ async def interactions(request: Request):
                 return JSONResponse({
                     "type": 4,  
                     "data": {
-                        "content": str(data)
+                        "content": "asd123123"
                     }
                 })
 
