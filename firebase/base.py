@@ -1,22 +1,16 @@
-import firebase_admin
-from firebase_admin import credentials, firestore
-import os
-cred = credentials.Certificate({
-    "type": "service_account",
-    "project_id": os.environ["FIREBASE_PROJECT_ID"],
-    "private_key": os.environ["FIREBASE_PRIVATE_KEY"].replace("\\n", "\n"),
-    "client_email": os.environ["FIREBASE_CLIENT_EMAIL"],
-    "token_uri": "https://oauth2.googleapis.com/token"
-})
-
-firebase_admin.initialize_app(cred)
-db = firestore.client()
-
-
+from firebase.init import db
 def save(doc={}):
-    doc_ref = db.collection("mavr").document("ets2")
-    doc_ref.set(doc)
-    print("Data added successfully!")
+    try:
+        if len(doc) <=2 :
+            return False
+        if doc['authname'] == None or doc['topic'] == None  :
+            return False
+        doc_ref = db.collection(doc['topic']).document(doc['authname'])
+        doc_ref.set(doc)
+        print("Data added successfully!")
+        return True
+    except:
+        return False
 
 
 def getAll():
@@ -25,11 +19,21 @@ def getAll():
     return {doc.id: doc.to_dict() for doc in docs}
 
 
-def getOne(doc_id):
-    doc_ref = db.collection("mavr").document(doc_id)
-    doc = doc_ref.get()
-    if doc.exists:
-        return doc.to_dict()
+def getOne(params):
+    authname = params.get('authname')
+    topic = params.get('topic')
+
+    if not authname or not topic:
+        return None
+
+    collection_ref = db.collection(topic)
+    query = collection_ref.where("authname", "==", authname)
+    results = query.stream()
+    for doc in results:
+        return {
+            "success": True,
+            "data": doc.to_dict()
+        }
     return None
 
 
@@ -49,9 +53,21 @@ def updateD(doc_id, update_data):
     print(f"Document {doc_id} updated successfully!")
 
 
-def deleteD(doc_id):
-    doc_ref = db.collection("mavr").document(doc_id)
-    doc_ref.delete()
-    print(f"Document {doc_id} deleted successfully!")
+def deleteD_by_authname(params):
+    authname = params.get('authname')
+    topic = params.get('topic')
+    if not authname or not topic:
+        return False
+    collection_ref = db.collection(topic)
+    query = collection_ref.where("authname", "==", authname)
+    results = query.stream()
 
+    deleted_count = 0
+    for doc in results:
+        doc.reference.delete()
+        deleted_count += 1
 
+    if deleted_count > 0:
+        return True
+    else:
+        return True
