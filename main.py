@@ -42,7 +42,7 @@ async def interactions(request: Request):
 
     if data.get("type") == 2:
         command_name = data["data"]["name"]
-        print(command_name)
+
         if command_name == "ask":
             question = data["data"]["options"][0]["value"]
             ai_response = ask_res(question)
@@ -56,28 +56,19 @@ async def interactions(request: Request):
         elif command_name == "doc" :
             question = data["data"]["options"][0]["value"]
             ai_response = ask_doc(question)
-            try:
-                if ai_response and ai_response['success']:
-                    return JSONResponse({
-                        "type": 4,  
-                        "data": {
-                            "content": ai_response['msg']
-                        }
-                    })
-                else:
-                    return JSONResponse({
-                        "type": 4,  
-                        "data": {
-                            "content": "😋"
-                        }
-                    })
-            except Exception as a:
-                 print(a)
-                 return JSONResponse({
-                        "type": 4,  
-                        "data": {
-                            "content": "😋"
-                        }
-                    })
+            if ai_response and ai_response['success']:
+                return JSONResponse({
+                    "type": 4,  
+                    "data": {
+                        "content": ai_response['msg']
+                    }
+                })
+            else:
+                return JSONResponse({
+                    "type": 4,  
+                    "data": {
+                        "content": "😋"
+                    }
+                })
 
     return JSONResponse({"error": "Unknown interaction"}, status_code=400)
