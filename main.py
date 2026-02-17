@@ -42,7 +42,7 @@ async def interactions(request: Request):
 
     if data.get("type") == 2:
         command_name = data["data"]["name"]
-
+        print(command_name)
         if command_name == "ask":
             question = data["data"]["options"][0]["value"]
             ai_response = ask_res(question)
@@ -71,7 +71,8 @@ async def interactions(request: Request):
                             "content": "😋"
                         }
                     })
-            except:
+            except Exception as a:
+                 print(a)
                  return JSONResponse({
                         "type": 4,  
                         "data": {
